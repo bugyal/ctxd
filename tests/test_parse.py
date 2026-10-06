@@ -26,10 +26,14 @@ def test_four_usage_turns_found(session):
     assert len(ledger.turns) == 4
 
 
-def test_malformed_and_unknown_lines_skipped(session, capsys):
-    ledger, *_ = parse_session(session)
-    # the fixture carries a broken line and an unknown record type; neither dies
-    assert len(ledger.turns) == 4
+def test_malformed_and_unknown_lines_skipped(session, capsys, tmp_path):
+    # malformed-line tolerance lives in its own file so the shipped fixture
+    # stays clean (the warning would fire on every user invocation otherwise)
+    bad = tmp_path / "bad.jsonl"
+    good = open(session).read().splitlines()
+    bad.write_text("\n".join(good[:1] + ["{not json"] + good[1:]) + "\n")
+    ledger, *_ = parse_session(str(bad))
+    assert len(ledger.turns) == 4   # the malformed line skipped, all else parsed
     err = capsys.readouterr().err
     assert "1 malformed line(s)" in err
 

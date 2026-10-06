@@ -61,8 +61,6 @@ records = [
          "content": "helper()\n", "numLines": 1, "startLine": 3,
          "totalLines": 5}},
      "timestamp": "2026-10-06T08:00:05.000Z", "uuid": "u5"},
-    # a malformed line the parser must skip without dying
-    "{not json",
     # a record type we do not know — skipped
     {"type": "summary", "summary": "irrelevant"},
 ]
